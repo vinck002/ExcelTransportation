@@ -1,0 +1,48 @@
+<div >
+    <button class="SelectFile" matTooltip="Accent" color="accent" type="button" mat-raised-button (click)="fileInput.click()" >
+        Select Excell File
+    </button>
+    <span >{{ExecellFileName}}</span>
+    <input id="ExcellFile" type="file"
+    accept=".csv, .xlsx" hidden #fileInput (change)="SelectedFile($event)">
+</div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Position Column -->
+        <ng-container matColumnDef="Driver">
+          <th mat-header-cell *matHeaderCellDef> Driver. </th>
+          <td mat-cell *matCellDef="let element"> {{element.Driver}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="Date">
+          <th mat-header-cell *matHeaderCellDef> Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.Date}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        <ng-container matColumnDef="Account">
+          <th mat-header-cell *matHeaderCellDef> Account </th>
+          <td mat-cell *matCellDef="let element"> {{element.Account}} </td>
+        </ng-container>
+      
+        <!-- Symbol Column
+        <ng-container matColumnDef="Type">
+          <th mat-header-cell *matHeaderCellDef> Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.Type}} </td>
+        </ng-container> -->
+        <ng-container matColumnDef="Duration">
+            <th mat-header-cell *matHeaderCellDef> Duration </th>
+            <td mat-cell *matCellDef="let element"> {{element.Duration}} </td>
+          </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      
+
+

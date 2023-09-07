@@ -9,7 +9,7 @@ import { DriverRow, ExcelFormat, THourPerDriver } from '../Interfaces/ExcelForma
 export class ExcelCalculatorComponent {
 ExecellFileName:string=""
 displayedColumns: string[] = ['Driver','Date', 'Account', 'Duration'];
-dataSource:DriverRow[]= [];
+dataSource:THourPerDriver[]= [];
 
 DriverComputado: DriverRow[]=[]
 
@@ -37,10 +37,6 @@ public realizarExcell(event:any){
 
    let driverEncontrado = rows.find((objeto) => objeto.Driver !== undefined);
    driverEncontrado!.Duration = this.convertirHorasAMinutos(driverEncontrado?.Duration ||'').toString();
-   
-   let hour = rows[6].Duration?.split("hrs");
-   //console.log(rows)
-  //   console.log(hour![0].split('min'));
 
    rows.filter(x => x.Duration).forEach((row,indice) =>
    {
@@ -54,55 +50,52 @@ public realizarExcell(event:any){
        row.Duration = this.convertirHorasAMinutos(row.Duration ||'').toString();
       
      }
-
+     
     });
-
+    
+   // console.log(rows)
 
     rows.filter(x => x.Date).forEach((row)=>
     {
-        var rowEncontrada = this.DriverComputado.find((x)=> x.Account === row.Account && x.Date === row.Date
-        && x.Driver === row.Driver);
+        var rowEncontrada = this.DriverComputado.find((x)=> x.Driver.trim() === (row.Driver??"").trim() && x.Account.trim() === (row.Account??"").trim() && x.Date?.trim() === row.Date?.toString().trim());
 
         if(rowEncontrada){
-        const driverToUpdate = this.DriverComputado.findIndex(x => x.Account === row.Account && x.Date === row.Date && x.Driver === row.Driver);
+          if(parseFloat(rowEncontrada!.Duration??0) < parseFloat(row.Duration!??0)){
 
-        if(this.DriverComputado[driverToUpdate].Duration < row.Duration! || 0){
-        this.DriverComputado[driverToUpdate].Duration = row.Duration!
-        }
+            rowEncontrada!.Duration = row.Duration!
+         
+          }
         }else{
         this.DriverComputado.push({   
         Driver: row.Driver||'', 
         Date: row.Date?.toString(), 
         Account: row.Account ||'',
         Duration: row.Duration || ''
-         ,totalAmount: row.totalAmount || 0});
+       ,totalAmount: row.totalAmount || 0});
 
         }
   });
-  
-  var totalsPerDriver: THourPerDriver[] = [];
-    this.DriverComputado.filter(x => x.Account !== undefined).forEach((row)=>
+  console.log(rows[128])
+console.log(rows[129])
+  console.log(this.DriverComputado)
+
+  const totalsPerDriver: Record<string,THourPerDriver>={};
+    this.DriverComputado.filter(x => x.Date !== undefined).forEach((row)=>
   {
-      const rowEncontrada = totalsPerDriver.find((x)=> x.Driver === row.Driver );
- 
-      if(rowEncontrada){
-        //console.log(parseFloat(row.Duration??'0.00'))
-        rowEncontrada.Duration = rowEncontrada.Duration??0 + parseFloat(row.Duration??'0.00') ;
-        rowEncontrada.totalAmount = rowEncontrada.totalAmount ?? 0;
-      }else{
-      totalsPerDriver.push({   
-      Driver: row.Driver||'', 
-      Date: row.Date?.toString(), 
-      Account: row.Account ||'',
-      Duration: parseFloat(row.Duration??'0.00'),
-      totalAmount: row.totalAmount || 0});
+    const{Driver,Duration} = row;
+    if(totalsPerDriver[Driver]){
+      totalsPerDriver[Driver].Duration! += parseFloat(Duration??'0.00');
+      totalsPerDriver[Driver].totalAmount =row.totalAmount
 
-      }
-});
+    }else{
+      totalsPerDriver[Driver] = {Driver: Driver, Duration: parseFloat(Duration),Date:row.Date,Account: row.Account,totalAmount:row.totalAmount}
+    }
 
-    //console.log(totalsPerDriver);
-  
-    this.dataSource = this.DriverComputado   
+  });
+
+  //console.log(Object.values(totalsPerDriver).map(x =>x));
+      
+    this.dataSource = Object.values(totalsPerDriver).map(x =>x) 
    //console.log(this.DriverComputado)
   }
   };
@@ -150,7 +143,7 @@ public convertirHorasAMinutos(cadena: string): number {
   if (!cadena.includes("hrs") && cadena.includes("min")) minutos = parseFloat(cadena.split('min')[0].toString()) || 0
 
   // Convierte las horas y los minutos a minutos totales
-  const resultado = parseFloat(`${horas}.${minutos}`); //horas * 60 + minutos;
+  const resultado = parseFloat(`${horas}.${ (Math.round((minutos/60)*100)) >= 10? Math.round((minutos/60)*100): `0${Math.round((minutos/60)*100)}` }`); //horas * 60 + minutos;
   return resultado;
 }
 

@@ -52,8 +52,6 @@ public realizarExcell(event:any){
      }
      
     });
-    
-   // console.log(rows)
 
     rows.filter(x => x.Date).forEach((row)=>
     {
@@ -74,16 +72,9 @@ public realizarExcell(event:any){
        ,totalAmount: row.totalAmount || 0});
 
         }
-    // var rowEncontrada1 = this.DriverComputado.find(x => x.Date?.toString().replace('Totals','').includes(row.Driver?.toString().replace(/\s/g,'')! ));
-    // console.log(rowEncontrada1)
-    // if(rowEncontrada1 !== undefined){
-    // console.log(rowEncontrada1)
-    // }
 
   });
-//   console.log(rows[128])
-// console.log(rows[129])
-//   console.log(this.DriverComputado)
+
 
   const totalsPerDriver: Record<string,THourPerDriver>={};
     this.DriverComputado.filter(x => x.Date !== undefined).forEach((row)=>
@@ -114,9 +105,9 @@ const totals = this.DriverComputado.filter(x =>x.Date && !x.Driver && x.totalAmo
 
 
    });
-  //console.log(totals);
+
     this.dataSource = DriverDurationReady
-   //console.log(this.DriverComputado)
+
   }
   };
 

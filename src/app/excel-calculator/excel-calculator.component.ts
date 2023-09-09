@@ -8,7 +8,7 @@ import { DriverRow, ExcelFormat, THourPerDriver } from '../Interfaces/ExcelForma
 })
 export class ExcelCalculatorComponent {
 ExecellFileName:string=""
-displayedColumns: string[] = ['Driver','Date', 'Account', 'Duration'];
+displayedColumns: string[] = ['Driver','Date', 'Account', 'Duration','totalAmount','Amount_Hour'];
 dataSource:THourPerDriver[]= [];
 
 DriverComputado: DriverRow[]=[]
@@ -74,10 +74,16 @@ public realizarExcell(event:any){
        ,totalAmount: row.totalAmount || 0});
 
         }
+    // var rowEncontrada1 = this.DriverComputado.find(x => x.Date?.toString().replace('Totals','').includes(row.Driver?.toString().replace(/\s/g,'')! ));
+    // console.log(rowEncontrada1)
+    // if(rowEncontrada1 !== undefined){
+    // console.log(rowEncontrada1)
+    // }
+
   });
-  console.log(rows[128])
-console.log(rows[129])
-  console.log(this.DriverComputado)
+//   console.log(rows[128])
+// console.log(rows[129])
+//   console.log(this.DriverComputado)
 
   const totalsPerDriver: Record<string,THourPerDriver>={};
     this.DriverComputado.filter(x => x.Date !== undefined).forEach((row)=>
@@ -88,14 +94,28 @@ console.log(rows[129])
       totalsPerDriver[Driver].totalAmount =row.totalAmount
 
     }else{
-      totalsPerDriver[Driver] = {Driver: Driver, Duration: parseFloat(Duration),Date:row.Date,Account: row.Account,totalAmount:row.totalAmount}
+      totalsPerDriver[Driver] = {Driver: Driver, Duration: parseFloat(Duration),Date:row.Date,Account: row.Account,totalAmount:row.totalAmount,Amount_Hour:0}
     }
 
   });
+  const DriverDurationReady = Object.values(totalsPerDriver).map(x =>x) ;
 
-  //console.log(Object.values(totalsPerDriver).map(x =>x));
-      
-    this.dataSource = Object.values(totalsPerDriver).map(x =>x) 
+  
+const totals = this.DriverComputado.filter(x =>x.Date && !x.Driver && x.totalAmount);//.sort((x,y) => x.Driver.localeCompare(y.Driver));
+  
+  totals.forEach((t) =>{
+   const driver_tot =  t.Date!.replace('Totals','');
+   const Drivertochange = DriverDurationReady.find(x=> x.Driver.trim().includes(driver_tot.trim()));
+   
+   if(Drivertochange){
+    Drivertochange.totalAmount = t.totalAmount
+   }
+   DriverDurationReady.map(x => x.Amount_Hour = ((x.totalAmount??0) / (x.Duration||1)))
+
+
+   });
+  //console.log(totals);
+    this.dataSource = DriverDurationReady
    //console.log(this.DriverComputado)
   }
   };

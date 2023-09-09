@@ -34,5 +34,6 @@ export interface THourPerDriver{
   Account: string;
   Duration: number|undefined;
   totalAmount?: number;
+  Amount_Hour: number|undefined;
   }
 

@@ -7,3 +7,8 @@ table {
   width: 100%;
   margin-top: 1rem;
 }
+.mat-header-row{
+  background-color: rgb(7, 60, 235);
+  font-size: large;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

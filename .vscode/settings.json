@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/22ee0e79-969b-42af-9f7e-49587c1806bb/resourceGroups/ExcelAppGrp/providers/Microsoft.Web/sites/ExcelAppProject",
+    "appService.deploySubpath": "dist\\excel-transportation"
+}
